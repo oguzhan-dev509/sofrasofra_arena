@@ -1,9 +1,36 @@
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'dukkan_kurulum_merkezi.dart';
 import 'vitrin_merkezi.dart';
 
-class MenuYoneticisi extends StatelessWidget {
+class MenuYoneticisi extends StatefulWidget {
   const MenuYoneticisi({super.key});
+
+  @override
+  State<MenuYoneticisi> createState() => _MenuYoneticisiState();
+}
+
+class _MenuYoneticisiState extends State<MenuYoneticisi> {
+  String? seciliMahalle;
+
+  // 18.211 KÖYÜ SÜZECEK OLAN AKILLI MOTOR
+  Future<List<String>> konumAra(String sorgu) async {
+    if (sorgu.length < 3) return [];
+    try {
+      final String response =
+          await rootBundle.loadString('assets/data/turkiye_rehberi.json');
+      final List<dynamic> data = json.decode(response);
+      return data
+          .where((yer) =>
+              yer.toString().toLowerCase().contains(sorgu.toLowerCase()))
+          .take(15)
+          .toList()
+          .cast<String>();
+    } catch (e) {
+      return ["Veri yüklenemedi"];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +49,81 @@ class MenuYoneticisi extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
+          // --- AKILLI KONUM KAYDETME MOTORU ---
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("DÜKKAN KONUMUNU KAYDET",
+                  style: TextStyle(
+                      color: Color(0xFFFFB300), fontWeight: FontWeight.bold)),
+              const SizedBox(height: 15),
+              Autocomplete<String>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  return konumAra(textEditingValue.text);
+                },
+                onSelected: (String secim) {
+                  setState(() {
+                    seciliMahalle = secim;
+                  });
+                },
+                fieldViewBuilder:
+                    (context, controller, focusNode, onFieldSubmitted) {
+                  return TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: "İlçe, Mahalle veya Köyünüzü Yazın...",
+                      hintStyle:
+                          const TextStyle(color: Colors.white24, fontSize: 13),
+                      prefixIcon: const Icon(Icons.search,
+                          color: Color(0xFFFFB300), size: 18),
+                      filled: true,
+                      fillColor: Colors.white.withOpacity(0.05),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                    ),
+                  );
+                },
+                optionsViewBuilder: (context, onSelected, options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      color: const Color(0xFF1A1A1A),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width - 40,
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            // itemBuilder DOĞRU YAZILDI
+                            final String option = options.elementAt(index);
+                            return ListTile(
+                              title: Text(option,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 13)),
+                              onTap: () => onSelected(option),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              const Divider(color: Colors.white10),
+              const SizedBox(height: 20),
+            ],
+          ),
+
+          // --- ARENA MODÜLLERİ ---
           _arenaSatiri(context, "DÜKKANIMI KUR", "İşletme & Yasal Kayıt",
               Icons.store, const DukkanKurulumMerkezi(), true),
           _arenaSatiri(context, "VİTRİNİM", "Medya & Tanıtım", Icons.videocam,
               const VitrinMerkeziSayfasi(), false),
-          _arenaSatiri(context, "AKADEMİM", "Eğitim & Gelişim", Icons.school,
+          _arenaSatiri(context, "AKADEMİM", "EĞİTİM & GELİŞİM", Icons.school,
               const AkademiMerkezi(), false),
           _arenaSatiri(context, "DASHBOARD", "İşletme Özeti", Icons.analytics,
               const DashboardMerkezi(), false),
@@ -69,7 +166,7 @@ class MenuYoneticisi extends StatelessWidget {
   }
 }
 
-// --- AKADEMİ MERKEZİ (TAM KAPASİTE & AKTİF VİZYON) ---
+// --- AKADEMİ MERKEZİ (TAM KAPASİTE GERİ DÖNDÜ) ---
 class AkademiMerkezi extends StatelessWidget {
   const AkademiMerkezi({super.key});
 
@@ -133,19 +230,10 @@ class AkademiMerkezi extends StatelessWidget {
           _aktifKart(context, Icons.business, "Girişimci Şef El Kitabı",
               "Maliyet hesabı ve dükkan yönetimi."),
           const SizedBox(height: 30),
-          const Text("GELECEĞİN VİZYONU",
-              style: TextStyle(
-                  color: Color(0xFFFFB300),
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
           _aktifKart(context, Icons.eco, "Sürdürülebilir Mutfak & Sıfır Atık",
-              "Malzemeyi %100 kullanma ve kârlılık stratejileri."),
-          _aktifKart(
-              context,
-              Icons.psychology_alt,
-              "Yapay Zeka Destekli Gastronomi",
-              "AI ile menü planlama ve dijital tasarım."),
+              "Malzemeyi %100 kullanma ve kârlılık."),
+          _aktifKart(context, Icons.psychology_alt, "AI Destekli Gastronomi",
+              "AI ile menü planlama ve tasarım."),
           const SizedBox(height: 40),
           const Text("HIZLANDIRILMIŞ EĞİTİMLER",
               style: TextStyle(
@@ -159,6 +247,7 @@ class AkademiMerkezi extends StatelessWidget {
               ["Pasta Teknikleri", "Çikolata", "Tatlılar"]),
           _egitimGrubu("KAFE İŞLETMECİLİĞİ", Icons.coffee,
               ["Maliyet", "Personel", "Pazarlama"]),
+          const SizedBox(height: 50),
         ],
       ),
     );
@@ -206,32 +295,29 @@ class AkademiMerkezi extends StatelessWidget {
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 14)),
+        iconColor: const Color(0xFFFFB300),
+        collapsedIconColor: Colors.white24,
         children: m
             .map((e) => ListTile(
-                leading:
-                    const Icon(Icons.check, color: Color(0xFFFFB300), size: 16),
-                title: Text(e,
-                    style:
-                        const TextStyle(color: Colors.white70, fontSize: 13))))
+                  leading: const Icon(Icons.check,
+                      color: Color(0xFFFFB300), size: 16),
+                  title: Text(e,
+                      style:
+                          const TextStyle(color: Colors.white70, fontSize: 13)),
+                ))
             .toList(),
       ),
     );
   }
 }
 
-// --- DİĞER MODÜLLER (SABİT) ---
+// Diğer modüller
 class DashboardMerkezi extends StatelessWidget {
   const DashboardMerkezi({super.key});
   @override
   Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: const Text("DASHBOARD",
-              style: TextStyle(color: Color(0xFFFFB300)))),
-      body: const Center(
-          child: Text("Veriler Yükleniyor...",
-              style: TextStyle(color: Colors.white38))));
+      body: const Center(child: Text("Yükleniyor...")));
 }
 
 class PazarimMerkezi extends StatelessWidget {
@@ -239,13 +325,7 @@ class PazarimMerkezi extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: const Text("PAZARIM",
-              style: TextStyle(color: Color(0xFFFFB300)))),
-      body: const Center(
-          child:
-              Text("Deneyimler...", style: TextStyle(color: Colors.white38))));
+      body: const Center(child: Text("Pazarım")));
 }
 
 class KurumsalMerkezi extends StatelessWidget {
@@ -253,11 +333,5 @@ class KurumsalMerkezi extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-          backgroundColor: Colors.black,
-          title: const Text("KURUMSAL",
-              style: TextStyle(color: Color(0xFFFFB300)))),
-      body: const Center(
-          child: Text("Yasal Bilgiler...",
-              style: TextStyle(color: Colors.white38))));
+      body: const Center(child: Text("Kurumsal")));
 }
