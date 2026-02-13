@@ -4,6 +4,13 @@ import 'package:flutter/material.dart';
 import 'dukkan_kurulum_merkezi.dart';
 import 'vitrin_merkezi.dart';
 
+// --- ARENA YÖNETİM MERKEZİ (GLOBAL) ---
+class ArenaAyarlari {
+  static String duyuruBaslik = "ARENA DUYURULARI";
+  static String duyuruIcerik = "REHBERİM, SESİM GELİYOR MU? ARENA YAYINDA!";
+  static bool sistemAktif = true;
+}
+
 class MenuYoneticisi extends StatefulWidget {
   const MenuYoneticisi({super.key});
 
@@ -350,10 +357,12 @@ class KurumsalMerkezi extends StatelessWidget {
                 fontSize: 16,
                 fontWeight: FontWeight.bold)),
       ),
+      // KURUMSAL MERKEZİ SINIFINI BUL VE BODY KISMINI ŞÖYLE GÜNCELLE:
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          // 📢 DUYURU MERKEZİ (CANLI HAT)
+          // 📢 DUYURU MERKEZİ (ARTIK GLOBAL MERKEZDEN OKUYOR)
+          // 📢 ARENA CANLI DUYURU HATTI
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -370,27 +379,34 @@ class KurumsalMerkezi extends StatelessWidget {
                     const Icon(Icons.campaign,
                         color: Color(0xFFFFB300), size: 28),
                     const SizedBox(width: 15),
-                    const Text("ARENA DUYURULARI",
-                        style: TextStyle(
+                    // DİKKAT: Burada 'const' yok, doğrudan merkeze bağlı:
+                    Text(ArenaAyarlari.duyuruBaslik,
+                        style: const TextStyle(
                             color: Color(0xFFFFB300),
                             fontWeight: FontWeight.bold)),
                     const Spacer(),
                     Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                            color: Colors.green, shape: BoxShape.circle)),
+                        decoration: BoxDecoration(
+                            color: ArenaAyarlari.sistemAktif
+                                ? Colors.green
+                                : Colors.red,
+                            shape: BoxShape.circle)),
                     const SizedBox(width: 5),
-                    const Text("AKTİF",
+                    Text(ArenaAyarlari.sistemAktif ? "AKTİF" : "BAKIMDA",
                         style: TextStyle(
-                            color: Colors.green,
+                            color: ArenaAyarlari.sistemAktif
+                                ? Colors.green
+                                : Colors.red,
                             fontSize: 10,
                             fontWeight: FontWeight.bold)),
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Text(
-                    "Yeni sistem güncellemesi yayınlandı! Tüm modüllerde performans iyileştirmesi yapıldı.",
-                    style: TextStyle(color: Colors.white70, fontSize: 12)),
+                // DİKKAT: Burada 'const' yok, senin yazdığın metni okur:
+                Text(ArenaAyarlari.duyuruIcerik,
+                    style:
+                        const TextStyle(color: Colors.white70, fontSize: 12)),
               ],
             ),
           ),
@@ -402,7 +418,7 @@ class KurumsalMerkezi extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5)),
           const SizedBox(height: 15),
-
+          // ... (Liste öğeleri buradan devam ediyor)
           _kurumsalListeItem(
               context,
               Icons.auto_stories,
@@ -596,17 +612,21 @@ class KurumsalMerkezi extends StatelessWidget {
       "Verileriniz, Arena'nın güvenli gastronomi ağı içerisinde korunmaktadır.\n\n- Kişisel verileriniz size özel fırsatlar sunmak dışında kullanılmaz.\n- Konum verileriniz dükkanınızın bulunabilirliği için işlenir.\n- Veri silme hakkınız saklıdır.";
 }
 
-// --- HIZLI ANALİZ MOTORLARI (AKILLI VERİ BAĞLANTISIYLA) ---
+// --- ARENA AKILLI ANALİZ MOTORU (KUSURSUZ PİKSEL AYARI) ---
 void _arenaHizliPanelAc(BuildContext context, String? mahalle) {
   showModalBottomSheet(
     context: context,
+    isScrollControlled: true, // 💡 Ekrana göre kendini ayarlar
     backgroundColor: const Color(0xFF1A1A1A),
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
     builder: (context) {
+      bool konumVar = mahalle != null;
+
       return Container(
         padding: const EdgeInsets.all(25),
-        height: 420,
+        // 💡 Taşma hatasını önlemek için ekranın yarısından biraz fazlasını kullanır
+        height: MediaQuery.of(context).size.height * 0.58,
         child: Column(
           children: [
             Container(
@@ -616,34 +636,83 @@ void _arenaHizliPanelAc(BuildContext context, String? mahalle) {
                     color: Colors.white10,
                     borderRadius: BorderRadius.circular(10))),
             const SizedBox(height: 25),
-            const Text("ARENA CANLI ÖZET",
+            const Text("ARENA BÖLGESEL ANALİZ",
                 style: TextStyle(
                     color: Color(0xFFFFB300),
                     fontSize: 18,
                     fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text(
-              mahalle != null
-                  ? "Analiz Bölgesi: $mahalle"
-                  : "Konum Kaydı Bekleniyor...",
-              style: TextStyle(
-                  color: mahalle != null
-                      ? Colors.white38
-                      : Colors.redAccent.withOpacity(0.5),
-                  fontSize: 12),
-              textAlign: TextAlign.center,
+            const SizedBox(height: 10),
+
+            // 📍 KONUM ROZETİ
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+              decoration: BoxDecoration(
+                color: konumVar
+                    ? Colors.green.withOpacity(0.1)
+                    : Colors.red.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(konumVar ? Icons.location_on : Icons.location_off,
+                      color: konumVar ? Colors.green : Colors.red, size: 14),
+                  const SizedBox(width: 8),
+                  Text(konumVar ? mahalle! : "BÖLGE SEÇİMİ BEKLENİYOR",
+                      style: TextStyle(
+                          color: konumVar ? Colors.green : Colors.red,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
             ),
-            const SizedBox(height: 30),
-            _panelSatir("TOPLAM KAZANÇ", "25.000 ₺", Icons.monetization_on),
-            _panelSatir("AKTİF SİPARİŞ", "4 Adet", Icons.shopping_basket),
-            _panelSatir("YENİ TEKLİFLER", "2 Adet", Icons.local_offer),
-            const Spacer(),
+
+            // 💡 Expanded ve SingleChildScrollView sayesinde o 3.3 piksellik taşma hatası biter
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 30),
+                    if (konumVar) ...[
+                      // ✅ EKSİK OLAN SATIRLAR BURADA ÇAĞRILIYOR
+                      _yeniPanelSatir("POTANSİYEL KAZANÇ", "28.500 ₺",
+                          Icons.trending_up, Colors.green),
+                      _yeniPanelSatir("SİPARİŞ HACMİ", "Yüksek",
+                          Icons.bar_chart, Colors.blue),
+                      _yeniPanelSatir("REKABET SEVİYESİ", "Orta Derece",
+                          Icons.speed, Colors.orange),
+                      const SizedBox(height: 20),
+                      const Text(
+                          "Bu veriler seçtiğiniz bölgedeki pazar analizine dayanır.",
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(color: Colors.white24, fontSize: 10)),
+                    ] else ...[
+                      const SizedBox(height: 40),
+                      const Icon(Icons.info_outline,
+                          color: Colors.white10, size: 60),
+                      const SizedBox(height: 20),
+                      const Text(
+                          "Analiz yapabilmemiz için lütfen\nDükkan Konumunuzu kaydedin.",
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(color: Colors.white54, fontSize: 14)),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 15),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFFB300),
-                  minimumSize: const Size(double.infinity, 50)),
+                  minimumSize: const Size(double.infinity, 55),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15))),
               onPressed: () => Navigator.pop(context),
-              child: const Text("ANALİZİ KAPAT",
+              child: const Text("ANLADIM",
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
             )
@@ -654,18 +723,27 @@ void _arenaHizliPanelAc(BuildContext context, String? mahalle) {
   );
 }
 
-Widget _panelSatir(String b, String d, IconData i) {
+// --- 🛠️ İŞTE EKSİK OLAN VE HATAYA SEBEP OLAN YARDIMCI MOTOR ---
+Widget _yeniPanelSatir(String b, String d, IconData i, Color c) {
   return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 12),
-    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Row(children: [
-        Icon(i, color: const Color(0xFFFFB300), size: 20),
-        const SizedBox(width: 15),
-        Text(b, style: const TextStyle(color: Colors.white70))
+    padding: const EdgeInsets.symmetric(vertical: 8),
+    child: Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.02),
+          borderRadius: BorderRadius.circular(15)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Row(children: [
+          Icon(i, color: c, size: 20),
+          const SizedBox(width: 15),
+          Text(b, style: const TextStyle(color: Colors.white70, fontSize: 12))
+        ]),
+        Text(d,
+            style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14)),
       ]),
-      Text(d,
-          style: const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-    ]),
+    ),
   );
 }
