@@ -26,3 +26,4 @@ flutter:
 
   assets:
     - assets/data/turkiye_rehberi.json
+    - assets/images/anadolu_vitrin.jpg

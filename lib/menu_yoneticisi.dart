@@ -747,3 +747,61 @@ Widget _yeniPanelSatir(String b, String d, IconData i, Color c) {
     ),
   );
 }
+
+Widget _arenaAnadoluVitrini() {
+  return Stack(
+    children: [
+      // 🖼️ ŞAHESER GÖRSEL
+      Container(
+        height: 320,
+        width: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/anadolu_vitrin.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+      // 🎭 KARARTMA KATMANI
+      Container(
+        height: 320,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withOpacity(0.1),
+              Colors.black.withOpacity(0.8),
+            ],
+          ),
+        ),
+      ),
+      // 🖋️ ELİTE YAZI KATMANI
+      const Positioned(
+        bottom: 40,
+        left: 20,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "ANADOLU SOFRASI",
+              style: TextStyle(
+                color: Color(0xFFFFB300),
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
+            ),
+            Text(
+              "Elite Gastronomi Ağı'nın Kalbi Burada Atıyor",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
