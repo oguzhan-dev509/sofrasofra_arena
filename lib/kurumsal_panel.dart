@@ -142,3 +142,25 @@ class _KurumsalPanelSayfasiState extends State<KurumsalPanelSayfasi> {
     );
   }
 }
+// --- SEPET SİSTEMİ (YENİ KAZANIM) ---
+
+// Sepete eklenen ürünleri tutacak olan global liste
+List<Map<String, dynamic>> sepetim = [];
+
+// Sepetteki toplam ürün sayısını veren yardımcı fonksiyon
+int get sepetAdeti => sepetim.length;
+
+// Toplam tutarı hesaplayan fonksiyon
+double sepetToplaminiHesapla() {
+  double toplam = 0;
+  for (var urun in sepetim) {
+    // "240 ₺" yazısından rakamı ayıklıyoruz
+    String fiyatTemiz = urun['fiyat']
+        .toString()
+        .replaceAll(' ₺', '')
+        .replaceAll('.', '')
+        .trim();
+    toplam += double.tryParse(fiyatTemiz) ?? 0;
+  }
+  return toplam;
+}

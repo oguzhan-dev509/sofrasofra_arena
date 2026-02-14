@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart'; // BU SATIR HAYATİ ÖNEMDE!
+import 'package:flutter/material.dart';
+import 'isletme_verisi.dart'; // Canlı veri merkezini bağladık
 
 class DashboardSayfasi extends StatelessWidget {
   const DashboardSayfasi({super.key});
@@ -9,55 +10,60 @@ class DashboardSayfasi extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        elevation: 0,
-        centerTitle: true,
         iconTheme: const IconThemeData(color: Color(0xFFFFB300)),
         title: const Text("İŞLETME ÖZETİ",
             style: TextStyle(
                 color: Color(0xFFFFB300), fontWeight: FontWeight.bold)),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          _ozetKartCiz("TOPLAM SATIŞ", "25.000 ₺", Icons.monetization_on),
-          _ozetKartCiz("AKTİF SİPARİŞ", "4 Adet", Icons.shopping_basket),
-          _ozetKartCiz("MÜŞTERİ PUANI", "4.9 / 5", Icons.star),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Column(
+          children: [
+            // 💰 TOPLAM SATIŞ KARTI (CANLI)
+            _ozetKartCiz(
+                "TOPLAM SATIŞ",
+                "₺${benimDukkanim.toplamSatis.toStringAsFixed(0)}",
+                Icons.monetization_on),
+            const SizedBox(height: 15),
+            // 📦 AKTİF SİPARİŞ KARTI (CANLI)
+            _ozetKartCiz("AKTİF SİPARİŞ", "${benimDukkanim.aktifSiparis} Adet",
+                Icons.shopping_basket),
+            const SizedBox(height: 15),
+            // ⭐ MÜŞTERİ PUANI KARTI (CANLI)
+            _ozetKartCiz("MÜŞTERİ PUANI", "${benimDukkanim.musteriPuani} / 5",
+                Icons.star),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _ozetKartCiz(String b, String d, IconData i) {
+  // 🛠️ YARDIMCI KART ÇİZİCİ (3 DEĞİŞKENLİ)
+  Widget _ozetKartCiz(String baslik, String deger, IconData ikon) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: const Color(0xFF1A1A1A),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFFFB300).withOpacity(0.1)),
+        border:
+            Border.all(color: const Color(0xFFFFB300).withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                color: const Color(0xFFFFB300).withOpacity(0.1),
-                shape: BoxShape.circle),
-            child: Icon(i, color: const Color(0xFFFFB300), size: 30),
-          ),
+          Icon(ikon, color: const Color(0xFFFFB300), size: 35),
           const SizedBox(width: 20),
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(b,
-                style: const TextStyle(
-                    color: Colors.white38,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold)),
-            Text(d,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.w900)),
-          ]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(baslik,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12)),
+              Text(deger,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
         ],
       ),
     );

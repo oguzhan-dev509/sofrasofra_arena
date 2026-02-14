@@ -1,16 +1,22 @@
-# sofrasofra_yeni
+# 🏛️ SOFRASOFRA ARENA - Elite Gastronomi Platformu
 
-A new Flutter project.
+Anadolu'nun geleneksel lezzetlerini ve ev yapımı ürünlerini dijital dünyayla buluşturan, modern mimariyle geliştirilmiş bir Flutter uygulamasıdır.
 
-## Getting Started
+## 🚀 Proje Vizyonu
+Arena, yerel üreticileri ve şefleri tek bir çatı altında toplayarak butik üretimi dijitalleştirir. "Sıfır Katkı, Maksimum Lezzet" ilkesiyle tasarlanmıştır.
 
-This project is a starting point for a Flutter application.
+## 💎 Temel Modüller
+* **🛒 Vitrinim (Pazar Yeri):** Kategorize edilmiş ürünler, detaylı ürün kartları ve akıllı filtreleme sistemi.
+* **📊 Kurumsal (Yönetim Paneli):** Şefler için canlı satış verileri, sipariş takibi ve performans grafikleri.
+* **🎓 Akademim:** Üreticiler için teknik eğitim videoları ve gastronomi rehberleri.
+* **🏬 Dükkanımı Kur:** Yeni şeflerin ekosisteme dahil olduğu profesyonel kayıt sistemi.
+* **🛍️ Akıllı Sepet:** Merkezi veri yönetimi (Global State) ile kesintisiz alışveriş deneyimi.
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ Teknik Özellikler
+- **Frontend:** Flutter & Dart
+- **Tema:** Custom Dark Gold "Elite" Theme
+- **Mimari:** Merkezi Veri Yönetimi (Centralized Data Handling)
+- **UI/UX:** Responsive Grid ve Custom Navigation
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+*Bu proje, Silikon Vadisi standartlarında bir kullanıcı deneyimi sunmak amacıyla geliştirilmeye devam etmektedir.*
