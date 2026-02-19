@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'detay_ekrani.dart';
 
 class DetayEkrani extends StatelessWidget {
   final String isim;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'bilgi_merkezi.dart';
 
 class KurumsalPanelSayfasi extends StatefulWidget {
   const KurumsalPanelSayfasi({super.key});

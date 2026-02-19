@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'sepet_verisi.dart';
+import 'sepet_sayfasi.dart'; // Aynı klasördeki sepeti görsün
 
 class OdemeSayfasi extends StatelessWidget {
   const OdemeSayfasi({super.key});
