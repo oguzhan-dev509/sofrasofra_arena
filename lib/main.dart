@@ -4,6 +4,6 @@ import 'giris_sayfasi.dart';
 void main() {
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: GirisSayfasi(), // Senin sağlam giriş sayfan
+    home: GirisSayfasi(), // Senin o meşhur 237 satırlık sağlam sayfan
   ));
 }
